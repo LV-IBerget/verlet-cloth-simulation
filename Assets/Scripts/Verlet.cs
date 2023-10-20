@@ -23,6 +23,11 @@ public class Verlet : MonoBehaviour
     private List<Particle> particles;
     private List<Connector> connectors;
 
+    private Vector3 lastMousePos = Vector3.zero;
+    private int grabbedParticle = -1;
+    [SerializeField]
+    private float breakDistance = 10.0f;
+
     // Initalize
     void Start()
     {
@@ -130,10 +135,14 @@ public class Verlet : MonoBehaviour
         public Vector3 vel;
     }
 
-    void Update()
+    private void FixedUpdate()
     {
+
         // Handle mouse input
         Vector3 mousePos = Input.mousePosition;
+
+        Vector3 mouseDelta = mousePos - lastMousePos;
+
         //Vector3 mousePos_new = Camera.main.ScreenToWorldPoint(mousePos);
         if (Input.GetMouseButton(0))
         {
@@ -147,19 +156,38 @@ public class Verlet : MonoBehaviour
             }
         }
 
-        // I should move this to FixedUpdate
+        if (Input.GetMouseButton(1) && grabbedParticle == -1)
+        {
+            for (int i = 0; i < particles.Count; i++)
+            {
+                float dist = Vector3.Distance(mousePos, Camera.main.WorldToScreenPoint(particles[i].pos));
+                if (dist <= 30.05f)
+                {
+                    lastMousePos = mousePos;
+                    grabbedParticle = i;
+                    break;
+                }
+            }
+        }
+        else if (Input.GetMouseButton(1) && grabbedParticle != -1)
+        {
+            particles[grabbedParticle].pos += (Camera.main.transform.rotation * (mouseDelta / 100.0f));
+        }
+        else
+        {
+            grabbedParticle = -1;
+        }
+
+
         for (int i = 0; i < connectors.Count; i++)
         {
             float dist1 = Vector3.Distance(connectors[i].point0.pos, connectors[i].point1.pos);
-            if (dist1 > 1.4)
+            if (dist1 > breakDistance)
             {
                 connectors[i].enabled = false;
             }
         }
-    }
 
-    private void FixedUpdate()
-    {
         // Update particle positions
         for (int p = 0; p < particles.Count; p++)
         {
@@ -233,8 +261,8 @@ public class Verlet : MonoBehaviour
             {
                 // Set points for the lines
                 var points = new Vector3[2];
-                points[0] = connectors[i].p0.transform.position + new Vector3(0, 0, 1);
-                points[1] = connectors[i].p1.transform.position + new Vector3(0, 0, 1);
+                points[0] = connectors[i].p0.transform.position;
+                points[1] = connectors[i].p1.transform.position;
 
                 // Draw lines
                 connectors[i].lineRender.startWidth = 0.04f;
