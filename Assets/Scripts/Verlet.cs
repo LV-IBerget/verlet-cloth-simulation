@@ -15,7 +15,7 @@ public class Verlet : MonoBehaviour
     // Initalize
     void Start()
     {
-        Vector2 spawnParticlePos = new Vector2(0, 0);
+        Vector3 spawnParticlePos = new Vector2(0, 0);
 
         spheres = new List<GameObject>();
         particles = new List<Particle>();
@@ -30,12 +30,12 @@ public class Verlet : MonoBehaviour
 
                 var mat = sphere.GetComponent<Renderer>();
                 mat.material = material;
-                sphere.transform.position = new Vector2(spawnParticlePos.y, spawnParticlePos.x);
-                sphere.transform.localScale = new Vector2(0.2f, 0.2f);
+                sphere.transform.position = new Vector3(spawnParticlePos.x, 0.0f, spawnParticlePos.y);
+                sphere.transform.localScale = new Vector3(0.2f, 0.2f);
 
                 // Create particle
                 Particle point = new Particle();
-                point.pinnedPos = new Vector2(spawnParticlePos.y, spawnParticlePos.x);
+                point.pinnedPos = new Vector3(spawnParticlePos.x, 0.0f, spawnParticlePos.y);
 
                 // Create a vertical connector 
                 if (x != 0)
@@ -79,7 +79,7 @@ public class Verlet : MonoBehaviour
                 }
 
                 // Pin the points in the top row of the grid
-                if (x == 0)
+                if (x == 0 || x == columns-1)
                 {
                     point.pinned = true;
                 }
@@ -107,16 +107,16 @@ public class Verlet : MonoBehaviour
         public GameObject p1;
         public Particle point0;
         public Particle point1;
-        public Vector2 changeDir;
+        public Vector3 changeDir;
     }
 
     public class Particle
     {
         public bool pinned = false;
-        public Vector2 pinnedPos;
-        public Vector2 pos;
-        public Vector2 oldPos;
-        public Vector2 vel;
+        public Vector3 pinnedPos;
+        public Vector3 pos;
+        public Vector3 oldPos;
+        public Vector3 vel;
         public float gravity = -0.24f;
         public float friction = 0.99f;
         public float damping = 1f;
@@ -126,13 +126,13 @@ public class Verlet : MonoBehaviour
     {
         // Handle mouse input
         Vector3 mousePos = Input.mousePosition;
-        Vector3 mousePos_new = Camera.main.ScreenToWorldPoint(mousePos);
+        //Vector3 mousePos_new = Camera.main.ScreenToWorldPoint(mousePos);
         if (Input.GetMouseButton(0))
         {
             for (int i = 0; i < connectors.Count; i++)
             {
-                float dist = Vector3.Distance(mousePos_new, connectors[i].point0.pos);
-                if (dist <= 1.05f)
+                float dist = Vector3.Distance(mousePos, Camera.main.WorldToScreenPoint(connectors[i].point0.pos));
+                if (dist <= 30.05f)
                 {
                     connectors[i].enabled = false;
                 }
@@ -197,7 +197,7 @@ public class Verlet : MonoBehaviour
                     connectors[i].changeDir = (connectors[i].point1.pos - connectors[i].point0.pos).normalized;
                 }
 
-                Vector2 changeAmount = connectors[i].changeDir * error;
+                Vector3 changeAmount = connectors[i].changeDir * error;
                 connectors[i].point0.pos -= changeAmount * 0.5f;
                 connectors[i].point1.pos += changeAmount * 0.5f;
 
@@ -208,7 +208,7 @@ public class Verlet : MonoBehaviour
         for (int p = 0; p < particles.Count; p++)
         {
             Particle point = particles[p];
-            spheres[p].transform.position = new Vector2(point.pos.x, point.pos.y);
+            spheres[p].transform.position = new Vector3(point.pos.x, point.pos.y, point.pos.z);
             spheres[p].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
         }
