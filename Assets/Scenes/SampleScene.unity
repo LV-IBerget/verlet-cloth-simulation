@@ -292,13 +292,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_LocalRotation: {x: 0.360022, y: -0, z: -0, w: 0.9329438}
-  m_LocalPosition: {x: -6.15, y: 7.49, z: -16.88}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 4.01, z: -4.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 42.203, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!1 &1577783043
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,8 +344,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 02631d3f87790a941af69c787b52e23a, type: 2}
   mesh: {fileID: 2534964839176971238, guid: c36d65ab3ec722345a5c5bf497f165ef, type: 3}
-  gravity: 0
+  gravity: -0.1
   friction: 0.99
   damping: 1
-  startDistance: 0.5
-  startingBreakDistance: 10
+  startDistance: 0.05
+  lineWidth: 0.01
+  startingBreakDistance: 150

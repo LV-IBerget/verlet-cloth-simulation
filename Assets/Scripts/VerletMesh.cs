@@ -17,7 +17,7 @@ public class VerletMesh : MonoBehaviour
     [SerializeField]
     private float damping = 1f;
     [SerializeField]
-    private float startDistance = 0.5f;
+    private float lineWidth = 0.04f;
 
 
     private List<GameObject> spheres;
@@ -27,7 +27,7 @@ public class VerletMesh : MonoBehaviour
     private Vector3 lastMousePos = Vector3.zero;
     private int grabbedParticle = -1;
     [SerializeField]
-    private float startingBreakDistance = 10.0f;
+    private float breakLength = 3.0f;
 
     // Initalize
     void Start()
@@ -46,7 +46,7 @@ public class VerletMesh : MonoBehaviour
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
             sphere.transform.position = vertexPosition;
-            sphere.transform.localScale = new Vector3(0.02f,0.02f,0.02f);
+            sphere.transform.localScale = new Vector3(lineWidth, lineWidth, lineWidth);
 
             // Create particle
             Particle point = new Particle();
@@ -66,12 +66,14 @@ public class VerletMesh : MonoBehaviour
         var submeshIndex = 0;
 
         int[] triIndices = mesh.GetTriangles(submeshIndex);
-        for(int i = 1;i < triIndices.Length;i++)
+        for (int i = 0; i < triIndices.Length - 1; i++) // triIndices.Length;i++)
         {
             //loop back to the first index if we've completed three entries.
-            int endOfEdge = (i % 3 != 0) ? 1 : -2; 
+            int endOfEdge = (i % 3 == 2) ? -2 : 1;
 
-            var gameObject = new GameObject("Line");
+            //if (endOfEdge == 0) continue;
+
+            var gameObject = new GameObject("Line" + i);
             var line = gameObject.AddComponent<LineRenderer>();
             Connector connector = new Connector();
 
@@ -90,13 +92,26 @@ public class VerletMesh : MonoBehaviour
             connector.lineRender = line;
             connector.lineRender.material = material;
 
+            connector.startDistance = Vector3.Distance(connector.point0.pos, connector.point1.pos);
+            connector.breakDistance = connector.startDistance * breakLength;
+
+
             connectors.Add(connector);
 
-        }
+            // Set points for the lines
+            var points = new Vector3[2];
+            points[0] = connector.p0.transform.position;
+            points[1] = connector.p1.transform.position;
 
+            // Draw lines
+            connector.lineRender.startWidth = lineWidth;
+            connector.lineRender.endWidth = lineWidth;
+            connector.lineRender.SetPositions(points);
+
+        }
     }
 
-
+    
     private void FixedUpdate()
     {
 
@@ -146,7 +161,7 @@ public class VerletMesh : MonoBehaviour
             float dist1 = Vector3.Distance(connectors[i].point0.pos, connectors[i].point1.pos);
             if (dist1 > connectors[i].breakDistance)
             {
-                //connectors[i].enabled = false;
+                connectors[i].enabled = false;
             }
         }
 
@@ -182,13 +197,13 @@ public class VerletMesh : MonoBehaviour
             else
             {
                 float dist = (connectors[i].point0.pos - connectors[i].point1.pos).magnitude;
-                float error = Mathf.Abs(dist - startDistance);
+                float error = Mathf.Abs(dist - connectors[i].startDistance);
 
-                if (dist > startDistance)
+                if (dist > connectors[i].startDistance)
                 {
                     connectors[i].changeDir = (connectors[i].point0.pos - connectors[i].point1.pos).normalized;
                 }
-                else if (dist < startDistance)
+                else if (dist < connectors[i].startDistance)
                 {
                     connectors[i].changeDir = (connectors[i].point1.pos - connectors[i].point0.pos).normalized;
                 }
@@ -223,8 +238,8 @@ public class VerletMesh : MonoBehaviour
                 points[1] = connectors[i].p1.transform.position;
 
                 // Draw lines
-                connectors[i].lineRender.startWidth = 0.04f;
-                connectors[i].lineRender.endWidth = 0.04f;
+                connectors[i].lineRender.startWidth = lineWidth;
+                connectors[i].lineRender.endWidth = lineWidth;
                 connectors[i].lineRender.SetPositions(points);
 
             }
@@ -232,6 +247,7 @@ public class VerletMesh : MonoBehaviour
         }
     }
 
+    
     public class Connector
     {
         public bool enabled = true;
@@ -241,6 +257,7 @@ public class VerletMesh : MonoBehaviour
         public Particle point0;
         public Particle point1;
         public Vector3 changeDir;
+        public float startDistance;
         public float breakDistance;
     }
 
