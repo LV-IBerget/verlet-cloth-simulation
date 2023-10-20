@@ -3,10 +3,21 @@ using UnityEngine;
 
 public class Verlet : MonoBehaviour
 {
+    [SerializeField]
     private int rows = 32;
+    [SerializeField]
     private int columns = 32;
+    [SerializeField]
     private float spacing = 0.5f;
     public Material material;
+
+    [SerializeField]
+    public float gravity = -0.24f;
+    [SerializeField]
+    public float friction = 0.99f;
+    [SerializeField]
+    public float damping = 1f;
+
 
     private List<GameObject> spheres;
     private List<Particle> particles;
@@ -117,9 +128,6 @@ public class Verlet : MonoBehaviour
         public Vector3 pos;
         public Vector3 oldPos;
         public Vector3 vel;
-        public float gravity = -0.24f;
-        public float friction = 0.99f;
-        public float damping = 1f;
     }
 
     void Update()
@@ -164,11 +172,11 @@ public class Verlet : MonoBehaviour
 
             else
             {
-                point.vel = (point.pos - point.oldPos) * point.friction;
+                point.vel = (point.pos - point.oldPos) * friction;
                 point.oldPos = point.pos;
 
                 point.pos += point.vel;
-                point.pos.y += point.gravity * Time.fixedDeltaTime;
+                point.pos.y += gravity * Time.fixedDeltaTime;
             }
 
 
@@ -209,7 +217,7 @@ public class Verlet : MonoBehaviour
         {
             Particle point = particles[p];
             spheres[p].transform.position = new Vector3(point.pos.x, point.pos.y, point.pos.z);
-            spheres[p].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            spheres[p].transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
 
         }
 
