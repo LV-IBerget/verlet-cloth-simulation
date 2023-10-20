@@ -293,7 +293,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0.360022, y: -0, z: -0, w: 0.9329438}
-  m_LocalPosition: {x: -8, y: 6.8, z: -17.5}
+  m_LocalPosition: {x: -6.15, y: 7.49, z: -16.88}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -308,7 +308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1577783045}
-  - component: {fileID: 1577783044}
+  - component: {fileID: 1577783046}
   m_Layer: 0
   m_Name: ClothSimulation
   m_TagString: Untagged
@@ -316,26 +316,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1577783044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1577783043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f826e6b55ec2257478a2861a9788f956, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rows: 32
-  columns: 32
-  spacing: 0.6
-  material: {fileID: 2100000, guid: 02631d3f87790a941af69c787b52e23a, type: 2}
-  gravity: -0.5
-  friction: 0.5
-  damping: 1
-  breakDistance: 5
 --- !u!4 &1577783045
 Transform:
   m_ObjectHideFlags: 0
@@ -350,3 +330,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1577783046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577783043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24fc7d4b1324aef49a1fba88481dd7fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: {fileID: 2100000, guid: 02631d3f87790a941af69c787b52e23a, type: 2}
+  mesh: {fileID: 2534964839176971238, guid: c36d65ab3ec722345a5c5bf497f165ef, type: 3}
+  gravity: 0
+  friction: 0.99
+  damping: 1
+  startDistance: 0.5
+  startingBreakDistance: 10
